@@ -12,7 +12,7 @@ var semver = require('semver');
 module.exports = function(grunt){
   grunt.registerTask('release', 'bump version, git tag, git push, npm publish', function(type){
     //defaults
-    var options = this.options({
+    var options = grunt.util._.extend({
       bump: true,
       file: grunt.config('pkgFile') || 'package.json',
       add: true,
@@ -21,11 +21,10 @@ module.exports = function(grunt){
       push: true,
       pushTags: true,
       npm : true
-    });
-
-    var tagName = grunt.config.getRaw('release.options.tagName') || '<%= version %>';
-    var commitMessage = grunt.config.getRaw('release.options.commitMessage') || 'release <%= version %>';
-    var tagMessage = grunt.config.getRaw('release.options.tagMessage') || 'version <%= version %>';
+    }, grunt.config(this.name).options);
+    var tagName = grunt.config.getRaw(this.name + '.options.tagName') || '<%= version %>';
+    var commitMessage = grunt.config.getRaw(this.name + '.options.commitMessage') || 'release <%= version %>';
+    var tagMessage = grunt.config.getRaw(this.name + '.options.tagMessage') || 'version <%= version %>';
 
     var config = setup(options.file, type);
     var templateOptions = {
